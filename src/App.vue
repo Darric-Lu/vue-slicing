@@ -13,6 +13,8 @@ const type = ref('')
 const title = ref('')
 const content = ref('')
 
+const isSend = ref(false)
+
 const fileArray = reactive<{ data: imageData[] }>({
   data: []
 })
@@ -20,9 +22,8 @@ const fileArray = reactive<{ data: imageData[] }>({
 const selectedFile = ref('')
 
 function submitFrom() {
-  console.log('😕 ~ type:', type.value)
-  console.log('😕 ~ title:', title.value)
-  console.log('😕 ~ content:', content.value)
+  isOpenModal.value = false
+  send()
 }
 
 function previewImage($event: Event) {
@@ -43,6 +44,12 @@ function deletePicture(id: string) {
   fileArray.data = fileArray.data.filter(p => p.id !== id)
 }
 
+function send() {
+  isSend.value = true
+  setTimeout(() => {
+    isSend.value = false
+  }, 5000)
+}
 </script>
 
 <template>
@@ -136,10 +143,22 @@ function deletePicture(id: string) {
             <div class="text-right w-full p-6 cursor-pointer" @click="selectedFile = ''">X</div>
             <img :src="selectedFile" class="p-2">
           </div>
-
         </div>
       </div>
     </Teleport>
+
+    <div v-if="isSend" class="bg-slate-800/20 absolute inset-0 flex justify-center items-center">
+      <div class="h-fit w-96 bg-white">
+        <div class="flex justify-around mt-6">
+          <h2 class="text-green-500 ml-8">
+            <span class="inline-block size-7 bg-green-500 rounded-full text-center text-white">v</span> 提交成功
+          </h2>
+          <div class="text-right cursor-pointer" @click="isSend = false">X</div>
+        </div>
+
+        <p class="p-8">謝謝您的反饋，我們將繼續努力，提供更優值的服務</p>
+      </div>
+    </div>
   </div>
 
 </template>
