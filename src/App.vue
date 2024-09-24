@@ -1,18 +1,45 @@
 <script setup lang="ts">
 // import HelloWorld from './components/HelloWorld.vue'
 // import TheWelcome from './components/TheWelcome.vue'
-import { ref } from 'vue'
+import { ref, reactive } from 'vue'
+
+interface imageData {
+  id: string,
+  file: string
+}
 
 const isOpenModal = ref(false)
 const type = ref('')
 const title = ref('')
 const content = ref('')
 
+const fileArray = reactive<{ data: imageData[] }>({
+  data: []
+})
+
+const selectedFile = ref('')
+
 function submitFrom() {
   console.log('😕 ~ type:', type.value)
   console.log('😕 ~ title:', title.value)
   console.log('😕 ~ content:', content.value)
 }
+
+function previewImage($event: Event) {
+  const target = $event.target as HTMLInputElement
+  const reader = new FileReader()
+  if (target && target.files) {
+    reader.readAsDataURL(target.files[0])
+    reader.addEventListener('load', (event) => {
+      fileArray.data.push({
+        id: `d-${fileArray.data.length}`,
+        file: event.target?.result as string
+      })
+    })
+  }
+}
+
+
 </script>
 
 <template>
@@ -64,12 +91,22 @@ function submitFrom() {
               <span class="text-gray-500 text-sm">(僅支持PNG、JPG格式，每張5MB內)</span>
             </p>
 
-            <div class="w-full">
-              <label for="d"
-                class="flex justify-center items-center size-20 border-dashed border-2 rounded text-center cursor-pointer">
-                <div class="text-neutral-600">+</div>
-              </label>
-              <input id="d" type="file" name="d-0" class="hidden">
+            <div class="w-full flex p-4">
+
+              <div v-for=" p in fileArray.data" :key="p.id"
+                class="w-40 h-40 overflow-hidden mr-4 cursor-pointer hover:opacity-60" @click="selectedFile = p.file">
+                <img :src="p.file">
+                <div class="hidden hover:block">{{ p.id }}</div>
+              </div>
+
+              <div v-show="fileArray.data.length < 3">
+                <label for="d"
+                  class="flex justify-center items-center size-40 border-dashed border-2 rounded text-center cursor-pointer">
+                  <div class="text-neutral-600">+</div>
+                </label>
+                <input id="d" type="file" accept="image/*" name="d-0" class="hidden" @change="previewImage($event)">
+              </div>
+
             </div>
           </div>
 
@@ -83,6 +120,14 @@ function submitFrom() {
             </button>
           </div>
         </form>
+
+        <div v-if="selectedFile" class="bg-slate-800/20 absolute inset-0 flex justify-center items-center">
+          <div class="h-fit w-80 bg-white">
+            <div class="text-right w-full p-6 cursor-pointer" @click="selectedFile = ''">X</div>
+            <img :src="selectedFile" class="p-2">
+          </div>
+
+        </div>
       </div>
     </Teleport>
   </div>
