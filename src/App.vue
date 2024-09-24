@@ -1,0 +1,128 @@
+<script setup lang="ts">
+// import HelloWorld from './components/HelloWorld.vue'
+// import TheWelcome from './components/TheWelcome.vue'
+import { ref } from 'vue'
+
+const isOpenModal = ref(false)
+const type = ref('')
+const title = ref('')
+const content = ref('')
+
+function submitFrom() {
+  console.log('😕 ~ type:', type.value)
+  console.log('😕 ~ title:', title.value)
+  console.log('😕 ~ content:', content.value)
+}
+</script>
+
+<template>
+  <div class="relative bg-white w-screen h-svh">
+    <div @click="isOpenModal = true"
+      class="bottom-8 right-8 text-center absolute size-10 text-3xl bg-blue-400 rounded-full text-white">
+      !
+    </div>
+
+    <Teleport to="body">
+      <div v-if="isOpenModal" class="modal">
+        <form @submit.prevent="submitFrom" class="bg-neutral-100 rounded p-4">
+          <h1>意見反饋</h1>
+
+          <div class="flex flex-col mt-4">
+            <label for="a">
+              <span class="text-red-500 text-sm mr-2">*</span>
+              <span>類別</span>
+            </label>
+            <select id="a" v-model="type" class="h-10 p-2 mt-2">
+              <option value="" disabled selected>請選擇類別</option>
+              <option value="a-1">操作問題</option>
+              <option value="a-2">優化建議</option>
+              <option value="a-3">bug反饋</option>
+              <option value="a-4">其他</option>
+            </select>
+          </div>
+
+          <div class="flex flex-col mt-4">
+            <label for="b">
+              <span class="text-red-500 text-sm mr-2">*</span>
+              <span>標題</span>
+              <span class="text-gray-500 text-sm">(限30字符內)</span>
+            </label>
+            <input id="b" type="text" class="h-10 p-2 mt-2" v-model="title" maxlength="30">
+          </div>
+
+          <div class="flex flex-col mt-4">
+            <label for="c">
+              <span class="text-red-500 text-sm mr-2">*</span>
+              <span>描述</span>
+              <span class="text-gray-500 text-sm">(限300字符內)</span>
+            </label>
+            <textarea id="c" type="text" class="h-10 p-2 mt-2" v-model="content" maxlength="300" />
+          </div>
+
+          <div class="mt-4">
+            <p>參考圖片
+              <span class="text-gray-500 text-sm">(僅支持PNG、JPG格式，每張5MB內)</span>
+            </p>
+
+            <div class="w-full">
+              <label for="d"
+                class="flex justify-center items-center size-20 border-dashed border-2 rounded text-center cursor-pointer">
+                <div class="text-neutral-600">+</div>
+              </label>
+              <input id="d" type="file" name="d-0" class="hidden">
+            </div>
+          </div>
+
+          <p>參考圖片
+            <span class="text-gray-500 text-sm"> 可提供意見／問題截圖（上傳數量0/3）</span>
+          </p>
+
+          <div class="h-full">
+            <button class="bg-sky-200 text-sky-500 w-full p-3 rounded mt-5" type="submit">
+              提交
+            </button>
+          </div>
+        </form>
+      </div>
+    </Teleport>
+  </div>
+
+</template>
+
+<style scoped>
+header {
+  line-height: 1.5;
+}
+
+.logo {
+  display: block;
+  margin: 0 auto 2rem;
+}
+
+@media (min-width: 1024px) {
+  header {
+    display: flex;
+    place-items: center;
+    padding-right: calc(var(--section-gap) / 2);
+  }
+
+  .logo {
+    margin: 0 2rem 0 0;
+  }
+
+  header .wrapper {
+    display: flex;
+    place-items: flex-start;
+    flex-wrap: wrap;
+  }
+}
+
+.modal {
+  position: fixed;
+  z-index: 999;
+  top: 20%;
+  left: 50%;
+  width: 800px;
+  margin-left: -400px;
+}
+</style>
