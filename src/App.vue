@@ -111,7 +111,7 @@ function previewImage($event: Event) {
           </div>
 
           <p>參考圖片
-            <span class="text-gray-500 text-sm"> 可提供意見／問題截圖（上傳數量0/3）</span>
+            <span class="text-gray-500 text-sm"> 可提供意見／問題截圖（上傳數量 {{ fileArray.data.length }} /3）</span>
           </p>
 
           <div class="h-full">
