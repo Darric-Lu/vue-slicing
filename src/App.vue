@@ -39,6 +39,9 @@ function previewImage($event: Event) {
   }
 }
 
+function deletePicture(id: string) {
+  fileArray.data = fileArray.data.filter(p => p.id !== id)
+}
 
 </script>
 
@@ -94,9 +97,16 @@ function previewImage($event: Event) {
             <div class="w-full flex p-4">
 
               <div v-for=" p in fileArray.data" :key="p.id"
-                class="w-40 h-40 overflow-hidden mr-4 cursor-pointer hover:opacity-60" @click="selectedFile = p.file">
-                <img :src="p.file">
-                <div class="hidden hover:block">{{ p.id }}</div>
+                class="group relative w-40 h-40 overflow-hidden mr-4 cursor-pointer ">
+                <img :src="p.file" class="group-hover:opacity-10">
+                <div class="group-hover:flex hidden absolute inset-0">
+                  <div class="w-1/2 text-center my-auto" @click="selectedFile = p.file">
+                    🔍
+                  </div>
+                  <div class="w-1/2 text-center my-auto" @click="deletePicture(p.id)">
+                    🗑️
+                  </div>
+                </div>
               </div>
 
               <div v-show="fileArray.data.length < 3">
